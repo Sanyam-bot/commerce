@@ -83,6 +83,10 @@ DATABASES = {
 
 AUTH_USER_MODEL = 'auctions.User'
 
+# Set the default primary key field type
+DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+
 # Password validation
 # https://docs.djangoproject.com/en/3.0/ref/settings/#auth-password-validators
 
