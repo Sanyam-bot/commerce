@@ -1,7 +1,10 @@
+from .forms import listing # Importing Django form class
+from .models import Auctionlistings # Importing model class from models.py
 from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth.decorators import login_required
 from django.db import IntegrityError
-from django.http import HttpResponse, HttpResponseRedirect
-from django.shortcuts import render
+from django.http import HttpResponse
+from django.shortcuts import render, redirect
 from django.urls import reverse
 
 from .models import User
@@ -22,7 +25,7 @@ def login_view(request):
         # Check if authentication successful
         if user is not None:
             login(request, user)
-            return HttpResponseRedirect(reverse("index"))
+            return redirect(index)
         else:
             return render(request, "auctions/login.html", {
                 "message": "Invalid username and/or password."
@@ -33,7 +36,7 @@ def login_view(request):
 
 def logout_view(request):
     logout(request)
-    return HttpResponseRedirect(reverse("index"))
+    return redirect(index)
 
 
 def register(request):
@@ -58,6 +61,34 @@ def register(request):
                 "message": "Username already taken."
             })
         login(request, user)
-        return HttpResponseRedirect(reverse("index"))
+        return redirect(index)
     else:
         return render(request, "auctions/register.html")
+
+@login_required(login_url="/login/") # Making sure the user is logged in
+def create(request):
+    if request.method == 'POST':
+        form = listing(request.POST) # Getting the form data from the POST
+        if form.is_valid():
+            # Process the data with form.is_cleaned
+            title = form.cleaned_data['title']
+            description = form.cleaned_data['description']
+            bid = form.cleaned_data['starting_bid']
+            # image_url = form.cleaned_data['image_url']
+            category = form.cleaned_data['category']
+
+            # Adding all the data in Auctionlistings model class
+            auction_listing = Auctionlistings.objects.create(
+                user = request.user,
+                title = title,
+                description =  description, 
+                starting_bid = bid,
+                category = category,
+                )
+
+            return redirect(index)
+    else:
+        form = listing()
+        return render(request, 'auctions/create.html', {
+            'form': form
+        })

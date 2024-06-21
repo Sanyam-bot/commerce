@@ -31,7 +31,7 @@ class Auctionlistings(models.Model):
     title = models.CharField(max_length=80)
     description = models.CharField(max_length=4000)
     starting_bid = models.DecimalField(max_digits=10 ,decimal_places=2, validators=[validate_bid])
-    image = models.ImageField(upload_to='media/auctions', null=True, blank=True)
+    # image = models.ImageField(upload_to='media/auctions', null=True, blank=True)
     category = models.CharField(max_length=5, choices=CATEGORY_CHOICES, blank=True)
 
     def __str__(self):
