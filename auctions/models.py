@@ -8,7 +8,7 @@ def validate_bid(value):
         raise ValidationError
 
 class User(AbstractUser):
-    pass
+    watchlist = models.ManyToManyField('Auctionlistings', related_name='users_watchlist')
 
 class Auctionlistings(models.Model):
     # The key is what gets store and value is human-readable
