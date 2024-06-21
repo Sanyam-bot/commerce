@@ -5,7 +5,7 @@
 
     {% for row in rows %}
         <ol>
-            <li><h4>{{ row.title }}</h4></li>
+            <li><h4><a href="{% url 'listings' listing_id=row.pk %}">{{ row.title }}</a></h4></li>
             <ul>
                 <li>{{ row.description }}</li>
                 <li>{{ row.starting_bid }}</li>
