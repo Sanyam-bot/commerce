@@ -11,7 +11,10 @@ from .models import User
 
 
 def index(request):
-    return render(request, "auctions/index.html")
+    rows = Auctionlistings.objects.all()
+    return render(request, "auctions/index.html", {
+        'rows': rows,
+    })
 
 
 def login_view(request):

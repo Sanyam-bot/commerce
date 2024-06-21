@@ -3,5 +3,15 @@
 {% block body %}
     <h2>Active Listings</h2>
 
-    TODO
-{% endblock %}
+    {% for row in rows %}
+        <ol>
+            <li><h4>{{ row.title }}</h4></li>
+            <ul>
+                <li>{{ row.description }}</li>
+                <li>{{ row.starting_bid }}</li>
+                <li>{{ row.category }}</li>
+            </ul>    
+        </ol>
+    {% endfor %}
+
+    {% endblock %}
