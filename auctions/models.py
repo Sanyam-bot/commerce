@@ -39,9 +39,18 @@ class Auctionlistings(models.Model):
     
 
 class Bids(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='user_listing')
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='bids_user')
     listing = models.ForeignKey(Auctionlistings, on_delete=models.CASCADE, related_name='listing_bids')
     bid = models.DecimalField(max_digits=10, decimal_places=2, validators=[validate_bid])
 
     def __str__(self):
         return str(self.bid) # Used str cause the return value had to be a string
+    
+
+class Comments(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='user_comments')
+    listing = models.ForeignKey(Auctionlistings, on_delete=models.CASCADE, related_name='listing_comments')
+    comments = models.CharField(max_length=20000)
+
+    def __str__(self):
+        return self.comments 
