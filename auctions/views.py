@@ -95,3 +95,22 @@ def create(request):
         return render(request, 'auctions/create.html', {
             'form': form
         })
+
+
+def listings(request, listing_id):
+    if request.method == 'POST':
+        listing = Auctionlistings.objects.get(pk=listing_id) # Getting the listing, which should be added to the watchlist
+
+        if request.POST['form_id'] == 'form2': # If the user clicked add watchlist button
+            request.user.watchlist.add(listing) # Adding the listing into the user's watchlist
+        elif request.POST['form_id'] == 'form1': # If the user clicked remove watchlist button
+            request.user.watchlist.remove(listing) # Remove the listing from the user's watchlist
+
+        return redirect(listings, listing_id=listing_id)
+
+    else: # If the request is GET
+        # Getting the Auctionlistings with id
+        listing = Auctionlistings.objects.get(pk=listing_id)
+        return render(request, 'auctions/listing.html', {
+        'listing': listing,
+        })
