@@ -76,7 +76,7 @@ def create(request):
             # Process the data with form.is_cleaned
             title = form.cleaned_data['title']
             description = form.cleaned_data['description']
-            bid = form.cleaned_data['starting_bid']
+            bid = form.cleaned_data['bid']
             # image_url = form.cleaned_data['image_url']
             category = form.cleaned_data['category']
 
@@ -85,7 +85,7 @@ def create(request):
                 user = request.user,
                 title = title,
                 description =  description, 
-                starting_bid = bid,
+                bid = bid,
                 category = category,
                 )
 

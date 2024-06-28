@@ -2,10 +2,10 @@ from django.contrib import admin
 from .models import *
 
 class AuctionlistingsAdmin(admin.ModelAdmin):
-    list_display = ('user', 'title', 'description', 'starting_bid', 'category')
+    list_display = ('user', 'title', 'description', 'bid', 'category')
     search_fields = ('title', 'description', 'category')
     list_filter = ('category', )
-    list_editable = ('starting_bid', 'category')
+    list_editable = ('bid', 'category')
     ordering = ('title',)
 
 

@@ -17,7 +17,7 @@
     {% endif %}
     <p> {{ listing.description }} </p>
 
-    <div>&#36; {{ listing.starting_bid }} </div>
+    <div>&#36; {{ listing.bid }} </div>
 
     {% if user.is_authenticated %}
         <form action="" method="post">

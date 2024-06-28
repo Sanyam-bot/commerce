@@ -30,10 +30,11 @@ class Auctionlistings(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='listings')
     title = models.CharField(max_length=80)
     description = models.CharField(max_length=4000)
-    starting_bid = models.DecimalField(max_digits=10 ,decimal_places=2, validators=[validate_bid])
+    bid = models.DecimalField(max_digits=10 ,decimal_places=2, validators=[validate_bid])
     # image = models.ImageField(upload_to='media/auctions', null=True, blank=True)
     category = models.CharField(max_length=5, choices=CATEGORY_CHOICES, blank=True)
-
+    active = models.BooleanField(default=True)
+    
     def __str__(self):
         return self.title
     
