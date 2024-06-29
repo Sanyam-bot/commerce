@@ -3,15 +3,16 @@
 {% block body %}
 
     <h3>Listing: {{ listing.title }} </h3>
+    <!-- Watchlist -->
     {% if user.is_authenticated %}
-        <form action="" method="post">
+        <form action="{% url 'watchlist' listing_id=listing.id %}" method="post">
             {% csrf_token %}
-            {% if listing in user.watchlist.all %}
+            {% if not listing in user.watchlist.all %}
                 <input type="hidden" name="form_id" value="form1">
-                <button type="submit">Remove from Watchlist</button>
+                <button type="submit">Add to Watchlist</button>
             {% else %}
                 <input type="hidden" name="form_id" value="form2">
-                <button type="submit">Add to Watchlist</button>
+                <button type="submit">Remove from Watchlist</button>
             {% endif %}
         </form>
     {% endif %}
@@ -22,8 +23,7 @@
     {% if user.is_authenticated %}
         <form action="" method="post">
             {% csrf_token %}
-            <input type="hidden" name="form_id" value="form2">
-            <input type="number" placeholder="Bid"> 
+            {{ bidform.as_p }}
             <button type="submit">Place Bid</button>
         </form>
     {% endif %}
