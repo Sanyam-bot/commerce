@@ -34,7 +34,13 @@ class Auctionlistings(models.Model):
     # image = models.ImageField(upload_to='media/auctions', null=True, blank=True)
     category = models.CharField(max_length=5, choices=CATEGORY_CHOICES, blank=True)
     active = models.BooleanField(default=True)
+    winner = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True, related_name='won_auctions')
     
+    def save(self, *args, **kwargs):
+        if self.winner is not None:
+            self.active = False
+        super(Auctionlistings, self).save(*args, **kwargs)
+
     def __str__(self):
         return self.title
     
