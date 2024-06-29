@@ -20,10 +20,14 @@
 
     <div>&#36; {{ listing.bid }} </div>
 
-    {% if user.is_authenticated %}
-        <form action="" method="post">
+    {% if message %}
+        <b>{{ message }}</b>
+    {% endif %}
+
+    {% if user.is_authenticated and not user == listing.user  %}
+        <form action="{% url 'bid' listing_id=listing.id %}" method="post">
             {% csrf_token %}
-            {{ bidform.as_p }}
+            {{ bid_form.as_p }}
             <button type="submit">Place Bid</button>
         </form>
     {% endif %}
@@ -34,7 +38,4 @@
         <li>Category: {{ listing.category }}</li>
     </ul>
 
-    {% if user.is_authenticated and user == listing.user  %}
-        HOOLI
-    {% endif %}
 {% endblock %}

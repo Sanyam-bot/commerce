@@ -1,5 +1,5 @@
 from .forms import listing, bidform # Importing Django form class
-from .models import Auctionlistings # Importing model class from models.py
+from .models import Auctionlistings, Bids # Importing model class from models.py
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.db import IntegrityError
@@ -98,47 +98,16 @@ def create(request):
 
 
 def listings(request, listing_id):
-    if request.method == 'POST':
-        listing = Auctionlistings.objects.get(pk=listing_id) # Getting the listing, which should be added to the watchlist
-
-        # Watchlist
-        if request.POST['form_id'] == 'form2': # If the user clicked add watchlist button
-            request.user.watchlist.add(listing) # Adding the listing into the user's watchlist
-        if request.POST['form_id'] == 'form1': # If the user clicked remove watchlist button
-            request.user.watchlist.remove(listing) # Remove the listing from the user's watchlist
-
-        # Bid
-        form = bidform(request.POST) # Getting the bid form data from request
-        if form.is_valid():
-            # Process the data with form.is_cleaned
-            bid_amount = form.is_cleaned['bid']
-
-            # Check if the bid is bigger than the last bid, if not present an error
-            if bid_amount <= listing.bid:
-                return render(request, 'auctions/listing.html', {
-                    'listing': listing,
-                    'message': 'The bid needs to bigger than the last bid',
-                })
-            else:
-                # Update the Auctionlistings bid
-                listing.bid = bid_amount
-
-        return redirect(listings, listing_id=listing_id)
-
-    # If the request is GET
-    else: 
         
-        # Getting the Auctionlistings with id
-        listing = Auctionlistings.objects.get(pk=listing_id)
+    listing = Auctionlistings.objects.get(pk=listing_id) # Getting the Auctionlistings with id
 
-        # Bid form
-        form = bidform()
+    form = bidform() # Bid form
 
-        return render(request, 'auctions/listing.html', {
-            'listing': listing,
-            'bid_form': form,
-        })
-    
+    return render(request, 'auctions/listing.html', {
+        'listing': listing,
+        'bid_form': form,
+    })
+
 
 def watchlist(request, listing_id):
     if request.method == 'POST':
@@ -151,5 +120,37 @@ def watchlist(request, listing_id):
 
         return redirect(listings, listing_id=listing_id)
     
+    else:
+        return HttpResponse('Not Allowed')
+    
+
+def bidfn(request, listing_id):
+    if request.method == 'POST':
+
+        listing = Auctionlistings.objects.get(pk=listing_id) # Getting the Auctionlistings with id
+
+        form = bidform(request.POST) # Getting the bid form data from request
+
+        if form.is_valid():
+            # Process the data with form.is_cleaned
+            bid_amount = form.cleaned_data['bid']
+
+            # Check if the bid is bigger than the last bid, if not present an error
+            if bid_amount > listing.bid:
+                # Add bid to the Bids table
+                Bids.objects.create(user=request.user, listing=listing, bid=bid_amount)
+
+                # Update the Auctionlistings bid
+                listing.bid = bid_amount
+                listing.save()
+            else:
+                return render(request, 'auctions/listing.html', {
+                    'listing': listing,
+                    'bid_form': bidform(),
+                    'message': 'The bid needs to be bigger than the last bid',
+                })
+
+        return redirect(listings, listing_id=listing_id)
+
     else:
         return HttpResponse('Not Allowed')
