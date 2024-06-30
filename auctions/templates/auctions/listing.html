@@ -24,20 +24,37 @@
         <b>{{ message }}</b>
     {% endif %}
 
-    {% if user.is_authenticated and not user == listing.user  %}
+    {% if user.is_authenticated %}
 
-        <form action="{% url 'bid' listing_id=listing.id %}" method="post">
-            {% csrf_token %}
-            {{ bid_form.as_p }}
-            <button type="submit">Place Bid</button>
-        </form>
+        <!-- Let the user make bid on the listing, if the listing wasn't made by the user -->
+        {% if not user == listing.user and listing.active == True %} 
 
-    {% elif user.is_authenticated and user == listing.user %}
+            <form action="{% url 'bid' listing_id=listing.id %}" method="post">
+                {% csrf_token %}
+                {{ bid_form.as_p }}
+                <button type="submit">Place Bid</button>
+            </form>
+
+        <!-- If the user made the listing, let them close it -->
+        {% elif user == listing.user and listing.active == True  %}
+
+            <form action="{% url 'close' listing_id=listing.id %}" method="post">
+                {% csrf_token %}
+                <input type="submit" value="Close the Auction">
+            </form> 
+
+        <!-- If the listing is no longer active -->            
+        {% elif listing.active == False %}
+            
+            <!-- If the user who won visits the page -->
+            {% if user == listing.winner%}
+                <div>You Won</div>
+            {% else %}
+            <!-- If anyone else visits the non-active page -->
+                <div>The Auction is closed</div>
+            {% endif %}
         
-        <form action="{% url 'close' listing_id=listing.id %}" method="post">
-            {% csrf_token %}
-            <input type="submit" value="Close the Auction">
-        </form>    
+        {% endif %}
 
     {% endif %}
 
