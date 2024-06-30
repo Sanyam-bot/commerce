@@ -25,11 +25,20 @@
     {% endif %}
 
     {% if user.is_authenticated and not user == listing.user  %}
+
         <form action="{% url 'bid' listing_id=listing.id %}" method="post">
             {% csrf_token %}
             {{ bid_form.as_p }}
             <button type="submit">Place Bid</button>
         </form>
+
+    {% elif user.is_authenticated and user == listing.user %}
+        
+        <form action="{% url 'close' listing_id=listing.id %}" method="post">
+            {% csrf_token %}
+            <input type="submit" value="Close the Auction">
+        </form>    
+
     {% endif %}
 
     <h4>Details</h4>

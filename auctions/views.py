@@ -3,6 +3,7 @@ from .models import Auctionlistings, Bids # Importing model class from models.py
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.db import IntegrityError
+from django.db.models import Max # For querySet
 from django.http import HttpResponse
 from django.shortcuts import render, redirect
 from django.urls import reverse
@@ -151,6 +152,34 @@ def bidfn(request, listing_id):
                 })
 
         return redirect(listings, listing_id=listing_id)
+
+    else:
+        return HttpResponse('Not Allowed')
+    
+
+def close(request, listing_id):
+    if request.method == 'POST':
+        listing = Auctionlistings.objects.get(pk=listing_id)
+        all_bids = listing.listing_bids.all()
+        # if there were bids for this listing
+        if all_bids:
+            # It finds the max bid value by taking bid value as the key for the max fn
+            max_obj = max(all_bids, key=lambda obj: obj.bid) 
+            # User who won the auction
+            won_user = max_obj.user 
+
+            # Putting the user in the Auctionlistings winner field
+            listing.winner = won_user
+        
+        # If the listing doesn't have any bids
+        else: 
+            # Update the listings active status
+            listing.active = False
+                        
+        # Save
+        listing.save()
+
+        return redirect(listings, listing_id=listing.id)
 
     else:
         return HttpResponse('Not Allowed')
