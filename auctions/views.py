@@ -7,6 +7,21 @@ from django.http import HttpResponse
 from django.shortcuts import render, redirect
 from .models import User
 
+CATEGORY_CHOICES = {
+    'ELEC': 'Electronics',
+    'FASH': 'Fashion',
+    'HOME': 'Home & Garden',
+    'SPORT': 'Sports & Outdoors',
+    'AUTO': 'Automotive',
+    'TOYS': 'Toys & Hobbies',
+    'HEAL': 'Health & Beauty',
+    'COLL': 'Collectibles & Art',
+    'BOOK': 'Books, Movies & Music',
+    'BUSI': 'Business & Industrial',
+    'PETS': 'Pet Supplies',
+    'BABY': 'Baby Essentials',
+}
+
 def index(request):
     rows = Auctionlistings.objects.all()
     return render(request, "auctions/index.html", {
@@ -205,5 +220,21 @@ def watchlist(request):
     listings = request.user.watchlist.all()
 
     return render(request, 'auctions/watchlist.html', {
+        'listings': listings,
+    })
+
+
+def categories(request):
+    return render(request, 'auctions/categories.html', {
+        'CATEGORY_CHOICES': CATEGORY_CHOICES,
+    })
+
+
+def categories_key(request, key):
+
+    # It gets all the listings of the particular category
+    listings = Auctionlistings.objects.filter(category=key)
+
+    return render(request, 'auctions/categories.html', {
         'listings': listings,
     })
