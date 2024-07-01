@@ -57,7 +57,7 @@ class Bids(models.Model):
 class Comments(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='user_comments')
     listing = models.ForeignKey(Auctionlistings, on_delete=models.CASCADE, related_name='listing_comments')
-    comments = models.CharField(max_length=20000)
+    comments = models.CharField(max_length=40000)
 
     def __str__(self):
         return self.comments 

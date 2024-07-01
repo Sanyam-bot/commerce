@@ -63,5 +63,27 @@
         <li>Listed By: {{ listing.user }}</li>
         <li>Category: {{ listing.category }}</li>
     </ul>
+    <br><br>
+
+    <h4>Comments:</h4>    
+    {% if user.is_authenticated %}
+
+        <form action="{% url 'comment' listing_id=listing.id %}" method="post">
+            {% csrf_token %}
+            <input autocomplete="off" name="comment" type="text" placeholder="Add a comment...">
+        </form>
+        <br>
+
+    {% endif %}
+    
+    {% if comments %}
+
+        {% for comment in comments %}
+
+            <h6 style="display: inline;"><b>{{ comment.user }}:</b></h6><p style="display: inline; margin: 9px;">{{ comment.comments }}</p><br>
+
+        {% endfor %}
+
+    {% endif %}
 
 {% endblock %}

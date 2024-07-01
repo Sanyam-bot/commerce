@@ -1,15 +1,11 @@
 from .forms import listing, bidform # Importing Django form class
-from .models import Auctionlistings, Bids # Importing model class from models.py
+from .models import Auctionlistings, Bids, Comments # Importing model class from models.py
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.db import IntegrityError
-from django.db.models import Max # For querySet
 from django.http import HttpResponse
 from django.shortcuts import render, redirect
-from django.urls import reverse
-
 from .models import User
-
 
 def index(request):
     rows = Auctionlistings.objects.all()
@@ -102,11 +98,14 @@ def listings(request, listing_id):
         
     listing = Auctionlistings.objects.get(pk=listing_id) # Getting the Auctionlistings with id
 
+    comments = Comments.objects.filter(listing=listing)
+
     form = bidform() # Bid form
 
     return render(request, 'auctions/listing.html', {
         'listing': listing,
         'bid_form': form,
+        'comments': comments,
     })
 
 
@@ -180,6 +179,21 @@ def close(request, listing_id):
         listing.save()
 
         return redirect(listings, listing_id=listing.id)
+
+    else:
+        return HttpResponse('Not Allowed')
+    
+
+def comment(request, listing_id):
+    if request.method == 'POST':
+        listing = Auctionlistings.objects.get(pk=listing_id)
+        comment = request.POST['comment']
+
+        # Add a Comment object
+        Comments.objects.create(user=request.user, listing=listing, comments=comment)
+
+        # Redirect to listing page
+        return redirect(listings, listing_id=listing_id)
 
     else:
         return HttpResponse('Not Allowed')
