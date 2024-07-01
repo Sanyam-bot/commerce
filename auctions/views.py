@@ -109,7 +109,7 @@ def listings(request, listing_id):
     })
 
 
-def watchlist(request, listing_id):
+def add_to_watchlist(request, listing_id):
     if request.method == 'POST':
         listing = Auctionlistings.objects.get(pk=listing_id) # Getting the listing, which should be added to the watchlist
 
@@ -197,3 +197,13 @@ def comment(request, listing_id):
 
     else:
         return HttpResponse('Not Allowed')
+    
+
+def watchlist(request):
+
+    # Getting all the listings in the watchlist of the logged in user
+    listings = request.user.watchlist.all()
+
+    return render(request, 'auctions/watchlist.html', {
+        'listings': listings,
+    })
