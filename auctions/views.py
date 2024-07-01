@@ -23,9 +23,9 @@ CATEGORY_CHOICES = {
 }
 
 def index(request):
-    rows = Auctionlistings.objects.all()
+    listings = Auctionlistings.objects.all()
     return render(request, "auctions/index.html", {
-        'rows': rows,
+        'listings': listings,
     })
 
 
