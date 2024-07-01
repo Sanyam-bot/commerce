@@ -214,6 +214,7 @@ def comment(request, listing_id):
         return HttpResponse('Not Allowed')
     
 
+@login_required(login_url="/login/") # Making sure the user is logged in
 def watchlist(request):
 
     # Getting all the listings in the watchlist of the logged in user
